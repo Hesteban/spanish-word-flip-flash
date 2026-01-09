@@ -23,6 +23,7 @@ pipeline {
                     steps {
                         script {
                             docker.image('node:22-alpine').inside {
+                                sh 'npm ci'
                                 sh 'npx vitest run --reporter=verbose'
                             }
                         }
