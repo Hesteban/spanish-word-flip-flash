@@ -46,10 +46,33 @@ jobs:
       - name: Run unit tests
         run: npx vitest run --reporter=verbose
 
+  integration-tests:
+    name: Integration Tests - Playwright
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install playwright browser
+        run: npx playwright install --with-deps
+
+      - name: Run tests
+        run: npx playwright test
+
   deploy:
      name: Deploy
      runs-on: ubuntu-latest
-     needs: [build, unit-tests]
+     needs: [unit-tests, integration-tests]
      container:
         image: alpine:latest
 
