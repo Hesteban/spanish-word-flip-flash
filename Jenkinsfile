@@ -18,13 +18,27 @@ pipeline {
         }
 
         stage('test') {
-            steps {
-                script {
-                    docker.image('node:22-alpine').inside {
-                        sh 'npx vitest run --reporter=verbose'
+            parallel {
+                stage('unit tests') {
+                    steps {
+                        script {
+                            docker.image('node:22-alpine').inside {
+                                sh 'npx vitest run --reporter=verbose'
+                            }
+                        }
                     }
                 }
-            }
+                stage('unit tests') {
+                    steps {
+                        script {
+                            docker.image('mcr.microsoft.com/playwright:v1.57.0-jammy').inside {
+                                sh 'npm ci'
+                                sh 'npm run test:e2e -- --project=chromium'
+                            }
+                        }
+                    }
+                }
+        }
         }
 
         stage('deploy') {
