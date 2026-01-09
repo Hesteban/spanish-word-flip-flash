@@ -28,7 +28,7 @@ pipeline {
                         }
                     }
                 }
-                stage('unit tests') {
+                stage('integration tests') {
                     steps {
                         script {
                             docker.image('mcr.microsoft.com/playwright:v1.57.0-jammy').inside {
@@ -38,17 +38,16 @@ pipeline {
                         }
                     }
                 }
+            }
         }
-        }
-
         stage('deploy') {
             steps {
                 script {
                     docker.image('alpine').inside {
                         echo 'Mock deployment was successful!'
+                        }
                     }
-                }
+                }   
             }
-        }
     }
 }
