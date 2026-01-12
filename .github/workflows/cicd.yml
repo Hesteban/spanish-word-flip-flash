@@ -69,6 +69,15 @@ jobs:
       - name: Run tests
         run: npx playwright test
 
+      - name: Generate report artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled()}}
+        with:
+          name: Integration tests (Playwright)
+          path: reports-e2e/html/
+          if-no-files-found: error
+
+
   deploy:
      name: Deploy
      runs-on: ubuntu-latest
